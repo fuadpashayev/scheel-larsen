@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProductItemFragment">
+
+
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/imageProduct"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:src="@mipmap/loader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/productName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/subBlack"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="TextView"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageProduct" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/productInfo"
+        android:layout_width="match_parent"
+        android:layout_height="274dp"
+        app:alignContent="center"
+        app:flexWrap="wrap"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
+        app:layout_constraintVertical_bias="0.407">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/productColors"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_flexBasisPercent="50%">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/productSizes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="15dp"
+            app:layout_flexBasisPercent="50%"
+            tools:layout_editor_absoluteX="180dp">
+
+        </LinearLayout>
+
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/productTitles"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        app:alignContent="center"
+        app:flexWrap="wrap"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Farve"
+            app:layout_flexBasisPercent="50%"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="172dp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Størrelse"
+            android:textStyle="bold"
+            app:layout_flexBasisPercent="50%"
+            tools:layout_editor_absoluteX="202dp"
+            tools:layout_editor_absoluteY="172dp" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="322dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/button_round"
+        android:drawablePadding="2dip"
+        android:drawableStart="@drawable/ic_touch_app_black_24dp"
+        android:gravity="center"
+        android:paddingLeft="115dp"
+        android:paddingRight="125dp"
+        android:singleLine="true"
+        android:text="VÆLG"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productInfo" />
+
+</android.support.constraint.ConstraintLayout>

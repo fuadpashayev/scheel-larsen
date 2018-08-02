@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Scheel-Larsen</string>
+    <string name="title_home">HUEM</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="nav_title">Home</string>
+    <string name="nav_products">PRODUKTER</string>
+    <string name="nav_about">OM OS</string>
+    <string name="nav_contact">KONTAKT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

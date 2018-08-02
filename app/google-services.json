@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "701112838409",
+    "firebase_url": "https://scheel-larsen-b1dce.firebaseio.com",
+    "project_id": "scheel-larsen-b1dce",
+    "storage_bucket": "scheel-larsen-b1dce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701112838409:android:798b62e0943c15c0",
+        "android_client_info": {
+          "package_name": "com.scheellarsen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701112838409-hroq526kp313qv3u5fadf2ghgo2dbccs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.scheellarsen",
+            "certificate_hash": "528aa30a1535192e2b96c2e792adaff71fab7894"
+          }
+        },
+        {
+          "client_id": "701112838409-o2bq29djcp8q3ce15a2eo7c2libcllnf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5-mUJhFnsrLHSvfYdZ9PKm-GZ00wlR3Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "701112838409-o2bq29djcp8q3ce15a2eo7c2libcllnf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "701112838409-drubqnttq5phth09i00t6nk8mimb8h70.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dk.azweb.scheellarsen"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

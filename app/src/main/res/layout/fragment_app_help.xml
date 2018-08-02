@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".HomeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/home_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/droid_sans"
+                android:gravity="center"
+                android:text="HVORDAN BRUGES DENNE APP"
+                android:textColor="@color/subBlack"
+                android:textSize="20sp"
+                android:textStyle="normal|bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/subBlack"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/home_title" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="31dp"
+                android:background="@drawable/apphelp_tv_border"
+                android:text="​  Vælg ikonet produkter."
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView1"
+                app:layout_constraintTop_toBottomOf="@+id/home_title" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/subBlack"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView1" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/apphelp_tv_border"
+                android:paddingStart="7dp"
+                android:text="Her fremkommer hele vores\nproduktoversigt.​ "
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="300dp"
+                android:layout_height="146dp"
+                android:layout_marginTop="16dp"
+                android:src="@mipmap/img2_apphelp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/subBlack"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+            <TextView
+                android:id="@+id/textView31"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/apphelp_tv_border"
+                android:paddingStart="7dp"
+                android:text="Her fremkommer hele vores\nproduktoversigt.​ "
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="300dp"
+                android:layout_height="146dp"
+                android:layout_marginTop="16dp"
+                android:src="@mipmap/img3_apphelp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView31" />
+
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="16dp"
+                android:paddingStart="7dp"
+                android:text="tager du et billede af din terrasse eller\nvælger et eksisterende billede fra dit\nfotogalleri."
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+            <ImageView
+                android:id="@+id/imageView32"
+                android:layout_width="300dp"
+                android:layout_height="182dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/img_round"
+                android:src="@mipmap/img32_apphelp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView32" />
+
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="4"
+                android:textColor="@color/subBlack"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView32" />
+
+            <TextView
+                android:id="@+id/textView41"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/apphelp_tv_border"
+                android:paddingStart="7dp"
+                android:text="Produktet bliver nu placeret på det\nvalgte billede."
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/imageView32" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/subBlack"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView41" />
+
+            <TextView
+                android:id="@+id/textView51"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/apphelp_tv_border"
+                android:paddingStart="7dp"
+                android:text="Du er nu klar til at indrette din terrasse\nmed følgende muligheder:"
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView41" />
+
+            <TextView
+                android:id="@+id/textView52"
+                android:layout_width="282dp"
+                android:layout_height="111dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="-15dp"
+                android:paddingStart="7dp"
+                android:text="- produktet kan spejlvendes (ved et let tryk på produktet)​\n- produktet kan forstørres/mindskes​\n- du har mulighed for at tilføje/fjerne produkt(er) ved at trykke på ikonet tilføj produkt”."
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView51" />
+
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/subBlack"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView52" />
+
+            <TextView
+                android:id="@+id/textView61"
+                android:layout_width="283dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/apphelp_tv_border"
+                android:paddingStart="7dp"
+                android:text="Ønsker du at gemme billedet, trykker du på ikonet gem billede. Billedet bliver så gemt i dit fotogalleri."
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView52" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+
+
+</android.support.constraint.ConstraintLayout>

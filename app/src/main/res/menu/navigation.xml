@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/navigation_home"
+        android:enabled="true"
+        android:icon="@mipmap/home"
+        android:title="@string/nav_title" />
+    <item
+        android:id="@+id/navigation_products"
+        android:icon="@mipmap/product"
+        android:title="@string/nav_products" />
+
+    <item
+        android:id="@+id/navigation_about"
+        android:icon="@mipmap/about"
+        android:title="@string/nav_about" />
+
+    <item
+        android:id="@+id/navigation_contact"
+        android:icon="@mipmap/contact"
+        android:title="@string/nav_contact" />
+
+
+
+</menu>
