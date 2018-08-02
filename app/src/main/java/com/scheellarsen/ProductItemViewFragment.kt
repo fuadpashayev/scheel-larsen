@@ -1,6 +1,7 @@
 package com.scheellarsen
 
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_product_item_view.*
 import kotlinx.android.synthetic.main.fragment_product_item_view.view.*
 import com.google.firebase.database.DataSnapshot
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
@@ -114,8 +116,17 @@ class ProductItemViewFragment : Fragment() {
 
         (getActivity() as AppCompatActivity).getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
+
+        rootView.startCameraView.setOnClickListener{
+            val intent = Intent(activity,CameraActivity::class.java)
+            startActivity(intent)
+        }
+
         return rootView
+
     }
+
+
 
 
     override fun onOptionsItemSelected(item: MenuItem):Boolean {
