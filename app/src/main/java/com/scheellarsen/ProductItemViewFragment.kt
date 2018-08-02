@@ -52,14 +52,15 @@ class ProductItemViewFragment : Fragment() {
                     var data = dataSnapshot.getValue(Products::class.java)
                     val colors = dataSnapshot.child("colors")
                     val sizes  = dataSnapshot.child("sizes")
-                    productName.text = data!!.Name
-                    Glide.with(context)
-                            .load(data!!.Img)
-                            .thumbnail(Glide.with(getContext()).load(R.mipmap.loader))
-                            .fitCenter()
-                            .crossFade()
-                            .into(imageProduct)
-
+                    rootView.findViewById<TextView>(R.id.productName).text = data!!.Name
+                    if(imageProduct!=null) {
+                        Glide.with(context)
+                                .load(data!!.Img)
+                                .thumbnail(Glide.with(getContext()).load(R.mipmap.loader))
+                                .fitCenter()
+                                .crossFade()
+                                .into(imageProduct)
+                    }
 
                     if(colors.childrenCount>0) {
                         productColors.layoutManager = GridLayoutManager(context, 3)
