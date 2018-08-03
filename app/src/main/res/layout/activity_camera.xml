@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/allView"
     tools:context=".CameraActivity">
-
 
     <Button
         android:id="@+id/capture_image"
@@ -16,19 +16,15 @@
         android:text="Capture" />
 
     <FrameLayout
-        android:id="@+id/rootView"
+        android:id="@+id/camera_frame"
         android:layout_width="match_parent"
-        android:layout_height="466dp">
+        android:layout_height="466dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" >
 
-
-
-        <FrameLayout
-            android:id="@+id/camera_frame"
-            android:layout_width="match_parent"
-            android:layout_height="466dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     </FrameLayout>
 
