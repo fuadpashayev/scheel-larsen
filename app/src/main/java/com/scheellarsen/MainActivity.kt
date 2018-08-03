@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         var currentTag = manager!!.fragments.toString()
 
-        if(Regex("AppHelpFragment|ProductCatFragment|ProductItemFragment|ProductItemViewFragment").find(currentTag)?.value!=null){
+        if(Regex("AppHelpFragment|ProductCatFragment|ProductItemFragment|ProductItemViewFragment|CameraActivity").find(currentTag)?.value!=null){
 
             if(Regex("ProductCatFragment").find(currentTag)?.value!=null)
                 getSupportActionBar()!!.setDisplayHomeAsUpEnabled(false)

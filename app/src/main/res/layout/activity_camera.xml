@@ -8,7 +8,7 @@
 
 
     <Button
-        android:id="@+id/captureImage"
+        android:id="@+id/capture_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -16,11 +16,20 @@
         android:text="Capture" />
 
     <FrameLayout
-        android:id="@+id/camera_frame"
+        android:id="@+id/rootView"
         android:layout_width="match_parent"
-        android:layout_height="466dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_height="466dp">
+
+
+
+        <FrameLayout
+            android:id="@+id/camera_frame"
+            android:layout_width="match_parent"
+            android:layout_height="466dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
 
     </FrameLayout>
+
 </RelativeLayout>

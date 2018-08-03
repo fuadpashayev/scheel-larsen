@@ -39,6 +39,7 @@ class ProductItemViewFragment : Fragment() {
         val scat_id = this.arguments!!.getString("scid")
         val cat_id = this.arguments!!.getString("cid")
         val product_id = this.arguments!!.getString("id")
+        var imgUrl:String?=null
         catId=cat_id
         scatId=scat_id
         val rootView = inflater.inflate(R.layout.fragment_product_item_view,container,false)
@@ -54,6 +55,7 @@ class ProductItemViewFragment : Fragment() {
                     val sizes  = dataSnapshot.child("sizes")
                     rootView.findViewById<TextView>(R.id.productName).text = data!!.Name
                     if(imageProduct!=null) {
+                        imgUrl=data!!.Img
                         Glide.with(context)
                                 .load(data!!.Img)
                                 .thumbnail(Glide.with(getContext()).load(R.mipmap.loader))
@@ -120,6 +122,7 @@ class ProductItemViewFragment : Fragment() {
 
         rootView.startCameraView.setOnClickListener{
             val intent = Intent(activity,CameraActivity::class.java)
+            intent.putExtra("imgUrl",imgUrl)
             startActivity(intent)
         }
 
