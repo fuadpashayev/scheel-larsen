@@ -1,12 +1,21 @@
 package com.scheellarsen
 
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.media.MediaBrowserServiceCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.google.firebase.database.*
@@ -19,13 +28,20 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_item_layout.view.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.json.JSONObject
-
-
+import java.io.ByteArrayOutputStream
+import android.widget.ArrayAdapter
+import android.view.LayoutInflater
+import androidx.graphics.drawable.toDrawable
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.*
 
 
 class ProductItemViewFragment : Fragment() {
@@ -34,12 +50,13 @@ class ProductItemViewFragment : Fragment() {
     var MainActivity: MainActivity? = null
     var catId:String?=null
     var scatId:String?=null
+    var selectImageRequestCode:Int?=null
+    var imgUrl:String?=null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         MainActivity = MainActivity()
         val scat_id = this.arguments!!.getString("scid")
         val cat_id = this.arguments!!.getString("cid")
         val product_id = this.arguments!!.getString("id")
-        var imgUrl:String?=null
         catId=cat_id
         scatId=scat_id
         val rootView = inflater.inflate(R.layout.fragment_product_item_view,container,false)
@@ -58,6 +75,7 @@ class ProductItemViewFragment : Fragment() {
                         imgUrl=data!!.Img
                         Glide.with(context)
                                 .load(data!!.Img)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .thumbnail(Glide.with(getContext()).load(R.mipmap.loader))
                                 .fitCenter()
                                 .crossFade()
@@ -120,17 +138,98 @@ class ProductItemViewFragment : Fragment() {
         (getActivity() as AppCompatActivity).getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
 
-        rootView.startCameraView.setOnClickListener{
-            val intent = Intent(activity,CameraActivity::class.java)
-            intent.putExtra("imgUrl",imgUrl)
-            startActivity(intent)
-        }
 
+        rootView.startDialog.setOnClickListener{
+
+            val mAnimals = ArrayList<String>()
+            mAnimals.add("Kamera")
+            mAnimals.add("Hent billede fra fotogalleri")
+            mAnimals.add("Køb produkter")
+            //Create sequence of items
+            val Animals = mAnimals.toArray(arrayOfNulls<String>(mAnimals.size))
+            val dialogBuilder = AlertDialog.Builder(context!!)
+            dialogBuilder.setTitle("Valgmuligheder")
+            dialogBuilder.setCancelable(true)
+            dialogBuilder.setItems(Animals, object: DialogInterface.OnClickListener{
+                override fun onClick(dialog:DialogInterface, item:Int) {
+                    when(item){
+                        0->{
+                            val intent = Intent(activity,CameraActivity::class.java)
+                            intent.putExtra("imgUrl",imgUrl)
+                            startActivity(intent)
+                        }
+                        1->{
+                            val photoPickerIntent = Intent(Intent.ACTION_PICK)
+                            photoPickerIntent.setType("image/*")
+                            var id=1
+                            startActivityForResult(photoPickerIntent, id)
+                        }
+                        2->{
+                            val intent = Intent(activity,CameraActivity::class.java)
+                            intent.putExtra("imgUrl",imgUrl)
+                            startActivity(intent)
+                        }
+                    }
+                }
+            })
+            //Create alert dialog object via builder
+            val alertDialogObject = dialogBuilder.create()
+            //Show the dialog
+            alertDialogObject.show()
+
+        }
         return rootView
 
     }
+    fun scaleDownBitmap(photo:Bitmap, newHeight:Int, context: Context):Bitmap {
+        var densityMultiplier = context.getResources().getDisplayMetrics().density
+        var height = (newHeight * densityMultiplier).toInt()
+        var width = (height * photo.getWidth() / (photo.getHeight()))
+        var nphoto = Bitmap.createScaledBitmap(photo, width, height, true)
+        return nphoto
+    }
+
+    override fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK)
+            when (requestCode) {
+                1 -> {
+                    val selectedImage = data.getData()
+                    try
+                    {
+                        var bitmap = MediaStore.Images.Media.getBitmap(activity!!.contentResolver, selectedImage)
+                        //imageProduct.setImageBitmap(bitmap)
+                        createImageFromBitmap(bitmap)
+                        val intent = Intent(activity,CameraActivity::class.java)
+                        intent.putExtra("imgUrl",imgUrl)
+                        //startActivity(intent)
+                    }
+                    catch (e:IOException) {
+                        Log.i("TAG", "Some exception " + e)
+                    }
+                }
+            }
+    }
 
 
+
+    fun createImageFromBitmap(bitmap:Bitmap):String {
+        var fileName:String? = "myImage"//no .png or .jpg needed
+        try
+        {
+            val bytes = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+            val fo = set
+            fo.write(bytes.toByteArray())
+            // remember close file output
+            fo.close()
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+            fileName = null
+        }
+        return fileName!!
+    }
 
 
     override fun onOptionsItemSelected(item: MenuItem):Boolean {

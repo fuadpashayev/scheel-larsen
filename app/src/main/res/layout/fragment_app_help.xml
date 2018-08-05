@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="1.0">
 
 
         <android.support.constraint.ConstraintLayout
@@ -131,7 +131,8 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/apphelp_tv_border"
                 android:paddingStart="7dp"
-                android:text="Her fremkommer hele vores\nproduktoversigt.​ "
+                android:paddingTop="10dp"
+                android:text="Når du har valgt det ønskede produkt."
                 android:textSize="15sp"
                 app:layout_constraintStart_toEndOf="@+id/textView3"
                 app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -162,7 +163,7 @@
             <ImageView
                 android:id="@+id/imageView32"
                 android:layout_width="300dp"
-                android:layout_height="182dp"
+                android:layout_height="205dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/img_round"
                 android:src="@mipmap/img32_apphelp"

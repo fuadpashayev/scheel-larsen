@@ -62,7 +62,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         callFragment("Home")
         val actionBar = supportActionBar
-        actionBar!!.setDisplayShowHomeEnabled(true)
+        actionBar!!.setDisplayShowHomeEnabled(false)
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(false)
+        findViewById<BottomNavigationView>(R.id.navigation).visibility = View.VISIBLE
         getSupportActionBar()!!.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar()!!.setCustomView(R.layout.abs_layout);
         setTitle("");

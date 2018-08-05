@@ -14,7 +14,9 @@ import kotlinx.android.synthetic.main.fragment_product_cat.*
 import kotlinx.android.synthetic.main.list_cat_layout.view.*
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import androidx.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 
 class ProductCatFragment : Fragment() {
@@ -64,12 +66,11 @@ class ProductCatFragment : Fragment() {
                 var imgHolder = viewHolder.itemView.subCatImage
                 Glide.with(context)
                         .load(model.Image)
-                        .thumbnail(Glide.with(getContext()).load(R.mipmap.loader))
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .thumbnail(Glide.with(context).load(R.mipmap.loader))
                         .fitCenter()
-                        .crossFade()
+                        .crossFade(1000)
                         .into(imgHolder)
-
-
 
 
                 var subCatId:String?=model.Index

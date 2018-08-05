@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -110,6 +111,7 @@ class ProductItemFragment : Fragment() {
 
                 Glide.with(context)
                         .load(model.Img)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .thumbnail(Glide.with(getContext()).load(R.mipmap.loader))
                         .fitCenter()
                         .crossFade()
