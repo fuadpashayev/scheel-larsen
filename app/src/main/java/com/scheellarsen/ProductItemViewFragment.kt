@@ -38,6 +38,7 @@ import java.io.ByteArrayOutputStream
 import android.widget.ArrayAdapter
 import android.view.LayoutInflater
 import androidx.graphics.drawable.toDrawable
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -122,30 +123,20 @@ class ProductItemViewFragment : Fragment() {
                         }
                     }
 
-
-
-
-
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Failed to read value
             }
         }
         mDatabase!!.addListenerForSingleValueEvent(messageListener)
 
         (getActivity() as AppCompatActivity).getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
-
-
         rootView.startDialog.setOnClickListener{
-
             val mAnimals = ArrayList<String>()
             mAnimals.add("Kamera")
             mAnimals.add("Hent billede fra fotogalleri")
-            mAnimals.add("Køb produkter")
-            //Create sequence of items
             val Animals = mAnimals.toArray(arrayOfNulls<String>(mAnimals.size))
             val dialogBuilder = AlertDialog.Builder(context!!)
             dialogBuilder.setTitle("Valgmuligheder")
@@ -161,32 +152,18 @@ class ProductItemViewFragment : Fragment() {
                         1->{
                             val photoPickerIntent = Intent(Intent.ACTION_PICK)
                             photoPickerIntent.setType("image/*")
-                            var id=1
+                            val id=1
                             startActivityForResult(photoPickerIntent, id)
-                        }
-                        2->{
-                            val intent = Intent(activity,CameraActivity::class.java)
-                            intent.putExtra("imgUrl",imgUrl)
-                            startActivity(intent)
                         }
                     }
                 }
             })
-            //Create alert dialog object via builder
             val alertDialogObject = dialogBuilder.create()
-            //Show the dialog
             alertDialogObject.show()
 
         }
         return rootView
 
-    }
-    fun scaleDownBitmap(photo:Bitmap, newHeight:Int, context: Context):Bitmap {
-        var densityMultiplier = context.getResources().getDisplayMetrics().density
-        var height = (newHeight * densityMultiplier).toInt()
-        var width = (height * photo.getWidth() / (photo.getHeight()))
-        var nphoto = Bitmap.createScaledBitmap(photo, width, height, true)
-        return nphoto
     }
 
     override fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent) {
@@ -197,39 +174,19 @@ class ProductItemViewFragment : Fragment() {
                     val selectedImage = data.getData()
                     try
                     {
-                        var bitmap = MediaStore.Images.Media.getBitmap(activity!!.contentResolver, selectedImage)
-                        //imageProduct.setImageBitmap(bitmap)
-                        createImageFromBitmap(bitmap)
                         val intent = Intent(activity,CameraActivity::class.java)
                         intent.putExtra("imgUrl",imgUrl)
-                        //startActivity(intent)
+                        intent.putExtra("galleryImage",selectedImage)
+                        startActivity(intent)
                     }
                     catch (e:IOException) {
-                        Log.i("TAG", "Some exception " + e)
+                        e.printStackTrace()
                     }
                 }
             }
     }
 
 
-
-    fun createImageFromBitmap(bitmap:Bitmap):String {
-        var fileName:String? = "myImage"//no .png or .jpg needed
-        try
-        {
-            val bytes = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-            val fo = set
-            fo.write(bytes.toByteArray())
-            // remember close file output
-            fo.close()
-        }
-        catch (e:Exception) {
-            e.printStackTrace()
-            fileName = null
-        }
-        return fileName!!
-    }
 
 
     override fun onOptionsItemSelected(item: MenuItem):Boolean {

@@ -29,52 +29,52 @@ class ShowCamera(context: Context?,camera:Camera?):SurfaceView(context),SurfaceH
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
 
 
+        if(camera!=null) {
 
-        try{
-            var params:Camera.Parameters = camera!!.parameters
+            try {
+                var params: Camera.Parameters = camera!!.parameters
+                var sizes: List<Camera.Size> = params.supportedPictureSizes
+                var mSize: Camera.Size? = null
+
+                for (size: Camera.Size in sizes) {
+                    mSize = size
+                    break;
+                }
+
+                if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    params.set("orientation", "portrait")
+                    camera!!.setDisplayOrientation(90)
+                    params.set("rotation", 90)
+                    params.setRotation(90)
+                } else {
+                    params.set("orientation", "landscape")
+                    camera!!.setDisplayOrientation(0)
+                    params.set("rotation", 0)
+                    params.setRotation(0)
+                }
+                params.setPreviewSize(mPreviewSize!!.width, mPreviewSize!!.height);
+                params.setPictureSize(mSize!!.width, mSize.height)
+                params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+
+                camera!!.parameters = params
+                camera!!.setPreviewDisplay(HOLDER)
+                camera!!.startPreview();
 
 
-            var sizes:List<Camera.Size> = params.supportedPictureSizes
-            var mSize:Camera.Size?=null
-
-            for(size:Camera.Size in sizes){
-                mSize=size
-                break;
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
 
-            if(this.resources.configuration.orientation==Configuration.ORIENTATION_PORTRAIT){
-                params.set("orientation","portrait")
-                camera!!.setDisplayOrientation(90)
-                params.set("rotation",90)
-                params.setRotation(90)
-            }else{
-                params.set("orientation","landscape")
-                camera!!.setDisplayOrientation(0)
-                params.set("rotation",0)
-                params.setRotation(0)
-            }
-            params.setPreviewSize(mPreviewSize!!.width, mPreviewSize!!.height);
-            params.setPictureSize(mSize!!.width,mSize.height)
-            params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-
-            camera!!.parameters = params
-            camera!!.setPreviewDisplay(HOLDER)
-            camera!!.startPreview();
-
-
-        }catch (e:IOException){
-            e.printStackTrace()
-            Log.d("--------camera",e.toString())
         }
-
-
-
 
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        camera!!.stopPreview()
-        camera!!.release()
+        if(camera!=null) {
+            camera!!.stopPreview()
+            camera!!.release()
+            camera = null
+        }
     }
     override fun onMeasure(widthMeasureSpec:Int, heightMeasureSpec:Int) {
         var width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec)
@@ -115,6 +115,7 @@ class ShowCamera(context: Context?,camera:Camera?):SurfaceView(context),SurfaceH
 
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
+
 
 
     }
