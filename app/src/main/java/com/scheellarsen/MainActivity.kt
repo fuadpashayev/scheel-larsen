@@ -74,9 +74,40 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        if(intent.extras!=null){
+            val extras = intent.extras
+            val data:String? = extras.getString("data")
+            if(data!=null){
+                callFragment("Product",data)
+                navigation.menu.getItem(1).setChecked(true)
+            }
+
+            val callFragment = extras.getString("callFragment")
+            if(callFragment!=null){
+                val product_id = extras.getString("product_id")
+                val cat_id = extras.getString("cat_id")
+                val scat_id = extras.getString("scat_id")
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                val transaction = manager.beginTransaction()
+                val fragment = ProductItemViewFragment()
+                transaction.setCustomAnimations(R.animator.fade_in, 0)
+                val args = Bundle()
+                args.putString("id",product_id)
+                args.putString("cid",cat_id)
+                args.putString("scid",scat_id)
+                fragment.arguments = args
+                transaction.replace(R.id.main_frame, fragment,fragment.tag)
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+
+            }
+
+        }
+
     }
 
-    fun callFragment(FragmentName:String){
+    fun callFragment(FragmentName:String,data:String?=null){
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         val transaction = manager.beginTransaction()
         var fragment = when(FragmentName){
@@ -92,6 +123,11 @@ class MainActivity : AppCompatActivity() {
         newTag = Regex("(.*)Fragment.*").replace(newTag,"$1")
         if(newTag != currentTag) {
             transaction.setCustomAnimations(R.animator.fade_in, 0)
+            if(data!=null) {
+                val args = Bundle()
+                args.putString("data", data)
+                fragment.arguments = args
+            }
             var newTag: String? = fragment.javaClass.name
             transaction.replace(R.id.main_frame, fragment)
             transaction.addToBackStack(null)

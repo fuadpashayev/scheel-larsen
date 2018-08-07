@@ -23,9 +23,11 @@ class ProductCatFragment : Fragment() {
     lateinit var mRecyclerView: RecyclerView
     lateinit var mDatabase : DatabaseReference
     var MainActivity: MainActivity? = null
+    var data:String?=null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         MainActivity = MainActivity()
         val cat_id = this.arguments!!.getString("id")
+        data = this.arguments?.getString("data")
         val rootView = inflater.inflate(R.layout.fragment_product_cat,container,false)
         mDatabase = FirebaseDatabase.getInstance().getReference("categories/$cat_id")
         mRecyclerView = rootView.findViewById(R.id.listView)
@@ -77,7 +79,7 @@ class ProductCatFragment : Fragment() {
                 loader?.visibility=View.GONE
 
                 viewHolder.itemView.setOnClickListener{
-                    loadProductItem(subCatId!!,cat_id!!)
+                    loadProductItem(subCatId!!,cat_id!!,data)
                 }
 
             }
@@ -90,11 +92,12 @@ class ProductCatFragment : Fragment() {
     class CatsViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
 
     }
-    fun loadProductItem(sub_cat_id:String,cat_id:String){
+    fun loadProductItem(sub_cat_id:String,cat_id:String,data:String?){
         var newFragment = ProductItemFragment()
         val args = Bundle()
         args.putString("id", "$sub_cat_id")
         args.putString("cid", "$cat_id")
+        if(data!=null) args.putString("data",data)
         newFragment.arguments = args
         var manager: FragmentManager? = getFragmentManager()
         var transaction:FragmentTransaction = manager!!.beginTransaction()

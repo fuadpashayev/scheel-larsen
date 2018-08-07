@@ -46,11 +46,6 @@ class ShowCamera(context: Context?,camera:Camera?):SurfaceView(context),SurfaceH
                     camera!!.setDisplayOrientation(90)
                     params.set("rotation", 90)
                     params.setRotation(90)
-                } else {
-                    params.set("orientation", "landscape")
-                    camera!!.setDisplayOrientation(0)
-                    params.set("rotation", 0)
-                    params.setRotation(0)
                 }
                 params.setPreviewSize(mPreviewSize!!.width, mPreviewSize!!.height);
                 params.setPictureSize(mSize!!.width, mSize.height)

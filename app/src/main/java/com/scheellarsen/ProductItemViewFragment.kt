@@ -6,14 +6,18 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.ContextCompat
 import android.support.v4.media.MediaBrowserServiceCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
@@ -51,15 +55,21 @@ class ProductItemViewFragment : Fragment() {
     var MainActivity: MainActivity? = null
     var catId:String?=null
     var scatId:String?=null
+    var productId:String?=null
     var selectImageRequestCode:Int?=null
     var imgUrl:String?=null
+    var dataCode:String?=null
+    var openedGallery=0
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         MainActivity = MainActivity()
         val scat_id = this.arguments!!.getString("scid")
         val cat_id = this.arguments!!.getString("cid")
         val product_id = this.arguments!!.getString("id")
+        dataCode = this.arguments?.getString("data")
         catId=cat_id
         scatId=scat_id
+        productId=product_id
+
         val rootView = inflater.inflate(R.layout.fragment_product_item_view,container,false)
         activity!!.navigation.visibility = View.GONE
         mDatabase = FirebaseDatabase.getInstance().getReference("detail/$scat_id/$product_id")
@@ -81,9 +91,15 @@ class ProductItemViewFragment : Fragment() {
                                 .fitCenter()
                                 .crossFade()
                                 .into(imageProduct)
+                        if(dataCode!=null){
+                            var dataCODE = Intent()
+                            dataCODE.setData(Uri.parse(imgUrl))
+                            activity!!.setResult(Activity.RESULT_OK, dataCODE);
+                            activity!!.finish()
+                        }
                     }
 
-                    if(colors.childrenCount>0) {
+                    if(colors.childrenCount>0 && productColors!=null) {
                         productColors.layoutManager = GridLayoutManager(context, 3)
                         var mapp = colors.getValue() as HashMap<String, Any>
                         val map = mapp
@@ -141,19 +157,29 @@ class ProductItemViewFragment : Fragment() {
             val dialogBuilder = AlertDialog.Builder(context!!)
             dialogBuilder.setTitle("Valgmuligheder")
             dialogBuilder.setCancelable(true)
+
             dialogBuilder.setItems(Animals, object: DialogInterface.OnClickListener{
                 override fun onClick(dialog:DialogInterface, item:Int) {
                     when(item){
                         0->{
                             val intent = Intent(activity,CameraActivity::class.java)
                             intent.putExtra("imgUrl",imgUrl)
+                            intent.putExtra("product_id",productId)
+                            intent.putExtra("cat_id",catId)
+                            intent.putExtra("scat_id",scatId)
                             startActivity(intent)
                         }
                         1->{
-                            val photoPickerIntent = Intent(Intent.ACTION_PICK)
-                            photoPickerIntent.setType("image/*")
-                            val id=1
-                            startActivityForResult(photoPickerIntent, id)
+
+                            if(checkPermission() && openedGallery==0){
+                                val photoPickerIntent = Intent(Intent.ACTION_PICK)
+                                photoPickerIntent.setType("image/*")
+                                startActivityForResult(photoPickerIntent, 1)
+                                openedGallery=1
+                            }else{
+                                requestPermission()
+                            }
+
                         }
                     }
                 }
@@ -165,25 +191,57 @@ class ProductItemViewFragment : Fragment() {
         return rootView
 
     }
+    fun checkPermission():Boolean{
+        val writeExternalStorage = ContextCompat.checkSelfPermission(context!!,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val useCamera = ContextCompat.checkSelfPermission(context!!,android.Manifest.permission.CAMERA)
+        if(writeExternalStorage== PackageManager.PERMISSION_GRANTED && useCamera== PackageManager.PERMISSION_GRANTED){
+           if(openedGallery==0) {
+               val photoPickerIntent = Intent(Intent.ACTION_PICK)
+               photoPickerIntent.setType("image/*")
+               startActivityForResult(photoPickerIntent, 1)
+               openedGallery=1
+           }
+            return true
+        }else
+            return false
+    }
+    fun requestPermission(){
+        ActivityCompat.requestPermissions(activity!!,arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA),1)
 
-    override fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            1->if(grantResults!!.size>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                if(openedGallery==0) {
+                    val photoPickerIntent = Intent(Intent.ACTION_PICK)
+                    photoPickerIntent.setType("image/*")
+                    startActivityForResult(photoPickerIntent, 1)
+                    openedGallery=1
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent?) {
+
+        if (resultCode == Activity.RESULT_OK && data != null && resultCode!=0){
             when (requestCode) {
                 1 -> {
                     val selectedImage = data.getData()
-                    try
-                    {
-                        val intent = Intent(activity,CameraActivity::class.java)
-                        intent.putExtra("imgUrl",imgUrl)
-                        intent.putExtra("galleryImage",selectedImage)
+                    try {
+                        val intent = Intent(activity, CameraActivity::class.java)
+                        intent.putExtra("imgUrl", imgUrl)
+                        intent.putExtra("galleryImage", selectedImage)
+                        intent.putExtra("product_id", productId)
+                        intent.putExtra("cat_id", catId)
+                        intent.putExtra("scat_id", scatId)
                         startActivity(intent)
-                    }
-                    catch (e:IOException) {
+                    } catch (e: IOException) {
                         e.printStackTrace()
                     }
                 }
             }
+        }
     }
 
 

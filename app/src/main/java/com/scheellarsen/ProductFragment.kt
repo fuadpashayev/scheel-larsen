@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,10 +22,11 @@ class ProductFragment : Fragment() {
     lateinit var mRecyclerView: RecyclerView
     lateinit var mDatabase : DatabaseReference
     var MainActivity: MainActivity? = null
-
+    var data:String?=null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         MainActivity = MainActivity()
         var rootView = inflater.inflate(R.layout.fragment_products,container,false)
+        data = this.arguments?.getString("data")
         mDatabase = FirebaseDatabase.getInstance().getReference("main_categories")
         mRecyclerView = rootView.findViewById(R.id.listView)
         mRecyclerView.setHasFixedSize(true)
@@ -52,7 +54,7 @@ class ProductFragment : Fragment() {
                 var catId:String?=model.Index!!
                 loader?.visibility=View.GONE
                 viewHolder.itemView.setOnClickListener{
-                    loadProductCat(catId!!)
+                    loadProductCat(catId!!,data)
                 }
 
             }
@@ -65,10 +67,11 @@ class ProductFragment : Fragment() {
     class CategoriesViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
 
     }
-    fun loadProductCat(cat_id:String){
+    fun loadProductCat(cat_id:String,data:String?){
         var newFragment = ProductCatFragment()
         val args = Bundle()
         args.putString("id", "$cat_id")
+        if(data!=null) args.putString("data",data)
         newFragment.arguments = args
         var manager: FragmentManager? = getFragmentManager()
         var transaction:FragmentTransaction = manager!!.beginTransaction()

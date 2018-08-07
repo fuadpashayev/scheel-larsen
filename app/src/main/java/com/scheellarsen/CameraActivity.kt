@@ -7,27 +7,22 @@ import android.content.Context
 import android.content.DialogInterface
 import android.hardware.Camera
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_camera.*
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.hardware.display.DisplayManager
-import android.media.ExifInterface
-import android.media.Image
-import android.media.ImageReader
+import android.media.*
 import android.net.Uri
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.provider.MediaStore
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.MotionEventCompat
 import android.support.v7.app.AlertDialog
@@ -42,10 +37,14 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.muddzdev.viewshotlibrary.Viewshot
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_product_item_view.*
-import java.io.IOException
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.security.AccessController.getContext
 import java.util.*
+
 
 
 class CameraActivity : AppCompatActivity(){
@@ -58,6 +57,7 @@ class CameraActivity : AppCompatActivity(){
     var image:ImageView?=null
     var rootLayout:ViewGroup?=null
     var galleryImage:Any?=null
+    var dCamera:View?=null
 
     var im_move_zoom_rotate:ImageView?=null
     var toolbar:android.support.v7.widget.Toolbar?=null
@@ -75,6 +75,9 @@ class CameraActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         val extras = intent.extras
         var imgUrl = extras.get("imgUrl")
+        val product_id = extras.getString("product_id")
+        val cat_id = extras.getString("cat_id")
+        val scat_id = extras.getString("scat_id")
         galleryImage = extras.get("galleryImage")
 
 
@@ -83,6 +86,8 @@ class CameraActivity : AppCompatActivity(){
         setContentView(R.layout.activity_camera)
         frameLayout = findViewById(R.id.camera_frame)
         capture_image.setOnClickListener{
+            loader.visibility = View.VISIBLE
+            playShutterSound()
             captureImage(camera_frame)
         }
         if(!checkPermission())
@@ -99,6 +104,7 @@ class CameraActivity : AppCompatActivity(){
 
         rootLayout=findViewById(R.id.rootView)
         image = imageCamera
+
 
 
         Glide.with(this)
@@ -132,99 +138,13 @@ class CameraActivity : AppCompatActivity(){
         im_move_zoom_rotate!!.bringToFront()
 
 
-        im_move_zoom_rotate!!.setOnTouchListener(object:View.OnTouchListener {
-            var parms:FrameLayout.LayoutParams?=null
-            var startwidth:Int = 0
-            var startheight:Int = 0
-            var dx = 0f
-            var dy = 0f
-            var x = 0f
-            var y = 0f
-            var angle = 0f
-            override fun onTouch(v:View, event:MotionEvent):Boolean {
-                var view = image
-                var bitmap = Bitmap.createBitmap(view!!.width,view!!.height,Bitmap.Config.ARGB_8888)
-                var b = BitmapDrawable(bitmap)
-                b.setAntiAlias(true)
-                var duration = event.getEventTime() - event.getDownTime()
-                if(duration<200 && event.pointerCount==1 && event.getAction() == 1){
-                    var sx = image!!.rotationY
-                    if(sx==0f){
-                        image!!.rotationY = 180f
-                    }else{
-                        image!!.rotationY = 0f
-                    }
 
-                }
-                when (event.getAction() and MotionEvent.ACTION_MASK) {
-                    MotionEvent.ACTION_DOWN -> {
-                        parms = view!!.getLayoutParams() as FrameLayout.LayoutParams
-                        startwidth = parms!!.width
-                        startheight = parms!!.height
-                        dx = event.getRawX() - parms!!.leftMargin
-                        dy = event.getRawY() - parms!!.topMargin
-                        mode = DRAG
-                    }
-                    MotionEvent.ACTION_POINTER_DOWN -> {
-                        oldDist = spacing(event)
-                        if (oldDist > 10f)
-                        {
-                            mode = ZOOM
-                        }
-                        d = rotation(event)
-                    }
-                    MotionEvent.ACTION_UP -> {}
-                    MotionEvent.ACTION_POINTER_UP -> mode = NONE
-                    MotionEvent.ACTION_MOVE -> if (mode === DRAG && event.pointerCount===1)
-                    {
-                        x = event.getRawX()
-                        y = event.getRawY()
-                        parms!!.leftMargin = (x - dx).toInt()
-                        parms!!.topMargin = (y - dy).toInt()
-                        parms!!.rightMargin = 0
-                        parms!!.bottomMargin = 0
-                        parms!!.rightMargin = parms!!.leftMargin + (5 * parms!!.width)
-                        parms!!.bottomMargin = parms!!.topMargin + (10 * parms!!.height)
-                        view!!.setLayoutParams(parms)
-                    }
-                    else if (mode === ZOOM)
-                    {
-                        if (event.pointerCount === 2)
-                        {
-                            newRot = rotation(event)
-                            val r = newRot - d
-                            angle = r
-                            x = event.getRawX()
-                            y = event.getRawY()
-                            val newDist = spacing(event)
-                            if (newDist > 10f)
-                            {
-                                val scale = newDist / oldDist * view!!.getScaleX()
-                                if (scale > 0.6)
-                                {
-                                    scalediff = scale
-                                    view!!.setScaleX(scale)
-                                    view!!.setScaleY(scale)
-                                }
-                            }
-                            view!!.animate().rotationBy(angle).setDuration(0).setInterpolator(LinearInterpolator()).start()
-
-                            view.setLayoutParams(parms)
-                        }
-                    }else if(mode!=ZOOM && mode!=DRAG){
-                        if(event.pointerCount==2){
-                            view!!.animate().rotationBy(angle).setDuration(0).setInterpolator(LinearInterpolator()).start()
-                        }
-
-                    }
-                }
-                return true
-            }
-        })
+        im_move_zoom_rotate!!.setOnTouchListener(IMAGETouchListener(im_move_zoom_rotate!!))
         capture_options.setOnClickListener{
             val mAnimals = ArrayList<String>()
-            mAnimals.add("Save")
-            mAnimals.add("Add Product")
+            mAnimals.add("Gem billede i fotogalleri")
+            mAnimals.add("Tilføj produkt")
+            mAnimals.add("Nyt billede")
             val Animals = mAnimals.toArray(arrayOfNulls<String>(mAnimals.size))
             val dialogBuilder = AlertDialog.Builder(this)
             dialogBuilder.setTitle("Valgmuligheder")
@@ -236,7 +156,17 @@ class CameraActivity : AppCompatActivity(){
                            takeScreenshot()
                         }
                         1->{
-                           return
+                           val intent = Intent(this@CameraActivity,MainActivity::class.java)
+                            intent.putExtra("data","1e9f5t")
+                            startActivityForResult(intent,2)
+                        }
+                        2->{
+                            val intent = Intent(this@CameraActivity,MainActivity::class.java)
+                            intent.putExtra("product_id", "$product_id")
+                            intent.putExtra("scat_id", "$scat_id")
+                            intent.putExtra("cat_id", "$cat_id")
+                            intent.putExtra("callFragment","ProductItemView")
+                            startActivity(intent)
                         }
                     }
                 }
@@ -246,6 +176,149 @@ class CameraActivity : AppCompatActivity(){
 
         }
     }
+
+    fun playShutterSound(){
+        val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        when (audio.getRingerMode()) {
+            AudioManager.RINGER_MODE_NORMAL -> {
+                val sound = MediaActionSound()
+                sound.play(MediaActionSound.SHUTTER_CLICK)
+            }
+            AudioManager.RINGER_MODE_SILENT -> {}
+            AudioManager.RINGER_MODE_VIBRATE -> {}
+        }
+    }
+
+    private inner class IMAGETouchListener(image:ImageView) : OnTouchListener {
+        var parms:FrameLayout.LayoutParams?=null
+        var startwidth:Int = 0
+        var startheight:Int = 0
+        var dx = 0f
+        var dy = 0f
+        var x = 0f
+        var y = 0f
+        var angle = 0f
+        var image = image
+        override fun onTouch(v:View, event:MotionEvent):Boolean {
+            var view = image
+            var bitmap = Bitmap.createBitmap(view!!.width,view!!.height,Bitmap.Config.ARGB_8888)
+            var b = BitmapDrawable(bitmap)
+            b.setAntiAlias(true)
+            var duration = event.getEventTime() - event.getDownTime()
+            if(duration<200 && event.pointerCount==1 && event.getAction() == 1){
+                var sx = image!!.rotationY
+                if(sx==0f){
+                    image!!.rotationY = 180f
+                }else{
+                    image!!.rotationY = 0f
+                }
+
+            }
+            when (event.getAction() and MotionEvent.ACTION_MASK) {
+                MotionEvent.ACTION_DOWN -> {
+                    parms = view!!.getLayoutParams() as FrameLayout.LayoutParams
+                    startwidth = parms!!.width
+                    startheight = parms!!.height
+                    dx = event.getRawX() - parms!!.leftMargin
+                    dy = event.getRawY() - parms!!.topMargin
+                    mode = DRAG
+                }
+                MotionEvent.ACTION_POINTER_DOWN -> {
+                    oldDist = spacing(event)
+                    if (oldDist > 10f)
+                    {
+                        mode = ZOOM
+                    }
+                    d = rotation(event)
+                }
+                MotionEvent.ACTION_UP -> {}
+                MotionEvent.ACTION_POINTER_UP -> mode = NONE
+                MotionEvent.ACTION_MOVE -> if (mode === DRAG && event.pointerCount===1)
+                {
+                    x = event.getRawX()
+                    y = event.getRawY()
+                    parms!!.leftMargin = (x - dx).toInt()
+                    parms!!.topMargin = (y - dy).toInt()
+                    parms!!.rightMargin = 0
+                    parms!!.bottomMargin = 0
+                    parms!!.rightMargin = parms!!.leftMargin + (5 * parms!!.width)
+                    parms!!.bottomMargin = parms!!.topMargin + (10 * parms!!.height)
+                    view!!.setLayoutParams(parms)
+                }
+                else if (mode === ZOOM)
+                {
+                    if (event.pointerCount === 2)
+                    {
+                        newRot = rotation(event)
+                        val r = newRot - d
+                        angle = r
+                        x = event.getRawX()
+                        y = event.getRawY()
+                        val newDist = spacing(event)
+                        if (newDist > 10f)
+                        {
+                            val scale = newDist / oldDist * view!!.getScaleX()
+                            if (scale > 0.6)
+                            {
+                                scalediff = scale
+                                view!!.setScaleX(scale)
+                                view!!.setScaleY(scale)
+                            }
+                        }
+                        view!!.animate().rotationBy(angle).setDuration(0).setInterpolator(LinearInterpolator()).start()
+
+                        view.setLayoutParams(parms)
+                    }
+                }else if(mode!=ZOOM && mode!=DRAG){
+                    if(event.pointerCount==2){
+                        view!!.animate().rotationBy(angle).setDuration(0).setInterpolator(LinearInterpolator()).start()
+                    }
+
+                }
+            }
+            return true
+        }
+    }
+
+
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val img = data!!.data
+        var IMAGE = ImageView(this)
+        var layoutParams = FrameLayout.LayoutParams(dptopx(200),dptopx(200))
+        var page = rootView
+        page.post(object:Runnable {
+            override fun run() {
+                var width = page.width
+                var height = page.height
+
+                var marginL = (width-dptopx(200))/2
+                var marginT = (height-dptopx(200))/2
+
+                layoutParams.leftMargin = marginL
+                layoutParams.topMargin = marginT
+
+            }
+        })
+
+
+        IMAGE!!.setLayoutParams(layoutParams)
+        IMAGE!!.bringToFront()
+
+
+        Glide.with(this)
+                .load(img)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .thumbnail(Glide.with(this).load(R.mipmap.loader))
+                .fitCenter()
+                .crossFade()
+                .into(IMAGE)
+        rootView.addView(IMAGE)
+        IMAGE.setOnTouchListener(IMAGETouchListener(IMAGE))
+
+    }
+
 
     fun showGalleryFrame(backImage:Any) {
         var img = backImage.toString()
@@ -316,6 +389,7 @@ class CameraActivity : AppCompatActivity(){
         if(opened==0 && galleryImage==null) {
             camera = Camera.open()
             showCamera = ShowCamera(this, camera!!)
+            dCamera = showCamera
             camera_frame!!.addView(showCamera)
             //var image = ImageView(this)
             opened = 1
@@ -334,7 +408,7 @@ class CameraActivity : AppCompatActivity(){
                         var fos = FileOutputStream(picture_file)
                         fos.write(data)
                         fos.close()
-                        camera_frame.removeAllViews()
+
 
                         val exif = ExifInterface(Uri.parse(picture_file.toString()).path)
                         val rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL)
@@ -345,7 +419,11 @@ class CameraActivity : AppCompatActivity(){
                         val uri = Uri.fromFile(file)
                         val bitmap = MediaStore.Images.Media.getBitmap(this@CameraActivity.contentResolver,uri)
                         val a = Bitmap.createBitmap(bitmap,0,0,bitmap.width,bitmap.height,matrix,true)
+                        camera_frame.removeView(dCamera)
                         camera_frame.background = BitmapDrawable(resources,a)
+                        loader.visibility = View.GONE
+                        capture_image.visibility = View.GONE
+                        capture_options.visibility = View.VISIBLE
                         file.delete()
 
                         opened=1
@@ -393,9 +471,6 @@ class CameraActivity : AppCompatActivity(){
 
         if(camera!=null){
             camera!!.takePicture(null,null,mPictureCallback)
-            capture_image.visibility = View.GONE
-            capture_options.visibility = View.VISIBLE
-
         }else{
             takeScreenshot()
         }
@@ -424,12 +499,6 @@ class CameraActivity : AppCompatActivity(){
             outputStream.close()
             sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(imageFile)))
             Toast.makeText(this,"Picture added to Gallery",Toast.LENGTH_LONG).show()
-            Handler().postDelayed({
-                val intent = Intent()
-                intent.action = Intent.ACTION_VIEW
-                intent.setDataAndType(Uri.parse(imageFile.toString()),"image/*")
-                startActivity(intent)
-            },1000)
 
         }
         catch (e:Throwable) {

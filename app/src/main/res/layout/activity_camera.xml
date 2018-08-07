@@ -2,27 +2,33 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rootLayView"
     tools:context=".CameraActivity">
 
     <FrameLayout
         android:id="@+id/rootView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:foregroundGravity="center">
+        android:adjustViewBounds="true"
+        android:foregroundGravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <FrameLayout
             android:id="@+id/camera_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:foregroundGravity="center" >
-
-        </FrameLayout>
+            android:foregroundGravity="center"
+            android:paddingBottom="8dp" />
 
         <ImageView
             android:id="@+id/imageCamera"
@@ -34,7 +40,6 @@
             android:scaleType="matrix" />
 
 
-
     </FrameLayout>
 
 
@@ -43,13 +48,11 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="28dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/rootView"
         android:background="@drawable/button_round_capture"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rootView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:elevation="1dp"
         app:srcCompat="@drawable/ic_camera_black_24dp" />
 
     <ImageButton
@@ -57,15 +60,38 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="28dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="@drawable/button_round_capture"
+        android:elevation="1dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/rootView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
-        android:elevation="1dp"
         app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/loader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/semiBlack"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 
 </android.support.constraint.ConstraintLayout>

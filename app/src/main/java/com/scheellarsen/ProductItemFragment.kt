@@ -31,10 +31,12 @@ class ProductItemFragment : Fragment() {
     lateinit var mDatabase : DatabaseReference
     var catr_id:String?=null
     var MainActivity: MainActivity? = null
+    var data:String?=null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         MainActivity = MainActivity()
         val subCatId = this.arguments!!.getString("id")
         val catId = this.arguments!!.getString("cid")
+        data = this.arguments?.getString("data")
         catr_id=catId
         val rootView = inflater.inflate(R.layout.fragment_product_item,container,false)
         mDatabase = FirebaseDatabase.getInstance().getReference("detail/$subCatId")
@@ -82,19 +84,19 @@ class ProductItemFragment : Fragment() {
                  if(num===0){
                      loader!!.visibility=View.GONE
                      productItemError.visibility = View.VISIBLE
-                    Handler().postDelayed({
-                        var fragment = ProductCatFragment()
-                        val args = Bundle()
-                        args.putString("id", "$catId")
-                        fragment.arguments = args
-                        var manager: FragmentManager? = getFragmentManager()
-                        var transaction:FragmentTransaction = manager!!.beginTransaction()
-                        transaction.setCustomAnimations(R.animator.fade_in,R.animator.fade_out)
-                        var tag:String? = fragment.javaClass.name
-                        transaction.addToBackStack(tag)
-                        transaction.replace(R.id.main_frame,fragment,fragment.tag).commit()
 
-                   },5000)
+//                        var fragment = ProductCatFragment()
+//                        val args = Bundle()
+//                        args.putString("id", "$catId")
+//                        fragment.arguments = args
+//                        var manager: FragmentManager? = getFragmentManager()
+//                        var transaction:FragmentTransaction = manager!!.beginTransaction()
+//                        transaction.setCustomAnimations(R.animator.fade_in,R.animator.fade_out)
+//                        var tag:String? = fragment.javaClass.name
+//                        transaction.addToBackStack(tag)
+//                        transaction.replace(R.id.main_frame,fragment,fragment.tag).commit()
+
+
                }
             }
 
@@ -121,8 +123,7 @@ class ProductItemFragment : Fragment() {
 
 
                 viewHolder.itemView.setOnClickListener{
-                   // Log.d("------id",subCatId+" - "+productId+" - "+catId)
-                    loadProduct(subCatId,productId!!,catId)
+                    loadProduct(subCatId,productId!!,catId,data)
                 }
 
             }
@@ -136,12 +137,13 @@ class ProductItemFragment : Fragment() {
 
     }
 
-    fun loadProduct(scat_id:String,product_id:String,cat_id:String){
+    fun loadProduct(scat_id:String,product_id:String,cat_id:String,data:String?){
         var newFragment = ProductItemViewFragment()
         val args = Bundle()
         args.putString("id", "$product_id")
         args.putString("scid", "$scat_id")
         args.putString("cid", "$cat_id")
+        if(data!=null) args.putString("data",data)
         newFragment.arguments = args
         var manager: FragmentManager? = getFragmentManager()
         var transaction:FragmentTransaction = manager!!.beginTransaction()
