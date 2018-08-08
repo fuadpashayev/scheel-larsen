@@ -27,14 +27,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:foregroundGravity="center"
-            android:paddingBottom="8dp" />
+            android:foregroundGravity="center" />
 
         <ImageView
             android:id="@+id/imageCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:foregroundGravity="center"
             android:scaleType="matrix" />
@@ -60,7 +58,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="28dp"
-        android:layout_marginStart="8dp"
         android:background="@drawable/button_round_capture"
         android:elevation="1dp"
         android:visibility="gone"
