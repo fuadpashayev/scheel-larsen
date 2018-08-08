@@ -1,11 +1,10 @@
 package com.scheellarsen
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.PixelFormat
 import android.hardware.Camera
 import android.util.Log
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.io.IOException
@@ -35,10 +34,13 @@ class ShowCamera(context: Context?,camera:Camera?):SurfaceView(context),SurfaceH
                 var params: Camera.Parameters = camera!!.parameters
                 var sizes: List<Camera.Size> = params.supportedPictureSizes
                 var mSize: Camera.Size? = null
-
+                var a=1
                 for (size: Camera.Size in sizes) {
-                    mSize = size
-                    break;
+                    if(a==2) {
+                        mSize = size
+                        break;
+                    }
+                    a++
                 }
 
                 if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -53,7 +55,10 @@ class ShowCamera(context: Context?,camera:Camera?):SurfaceView(context),SurfaceH
                     params.setRotation(0)
                 }
                 params.setPreviewSize(mPreviewSize!!.width, mPreviewSize!!.height);
-                params.setPictureSize(mSize!!.width, mSize.height)
+
+                params.setPictureSize(mSize!!.width, mSize!!.height)
+
+
                 params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
 
                 camera!!.parameters = params
@@ -94,23 +99,36 @@ class ShowCamera(context: Context?,camera:Camera?):SurfaceView(context),SurfaceH
         }
     }
 
-    private fun getOptimalPreviewSize(sizes: List<Camera.Size>?, w: Int, h: Int): Camera.Size? {
+private fun getOptimalPreviewSize(sizes: List<Camera.Size>?, w: Int, h: Int): Camera.Size? {
+    val ASPECT_TOLERANCE = 0.1
+    val targetRatio = w.toDouble() / h
+    if (sizes == null) return null
 
-        if (sizes == null) return null
+    var optimalSize: Camera.Size? = null
+    var minDiff = java.lang.Double.MAX_VALUE
 
-        var optimalSize: Camera.Size? = null
-        val ratio = h.toDouble() / w
-        var minDiff = java.lang.Double.MAX_VALUE
-        var newDiff: Double
+// Try to find an size match aspect ratio and size
+    for (size in sizes) {
+        val ratio = size.width.toDouble() / size.height
+        if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue
+        if (Math.abs(size.height - h) < minDiff) {
+            optimalSize = size
+            minDiff = Math.abs(size.height - h).toDouble()
+        }
+    }
+
+    // Cannot find the one match the aspect ratio, ignore the requirement
+    if (optimalSize == null) {
+        minDiff = java.lang.Double.MAX_VALUE
         for (size in sizes) {
-            newDiff = Math.abs(size.width.toDouble() / size.height - ratio)
-            if (newDiff < minDiff) {
+            if (Math.abs(size.height - h) < minDiff) {
                 optimalSize = size
-                minDiff = newDiff
+                minDiff = Math.abs(size.height - h).toDouble()
             }
         }
-        return optimalSize
     }
+    return optimalSize
+}
 
 
 

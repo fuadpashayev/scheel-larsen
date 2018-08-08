@@ -1,6 +1,4 @@
 package com.scheellarsen
-
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -12,60 +10,49 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_product_cat.*
 import kotlinx.android.synthetic.main.list_cat_layout.view.*
-import android.support.v7.app.AppCompatActivity
 import android.view.*
-import androidx.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-
+import kotlinx.android.synthetic.main.abs_layout.*
 
 class ProductCatFragment : Fragment() {
-    lateinit var mRecyclerView: RecyclerView
+    private lateinit var mRecyclerView: RecyclerView
     lateinit var mDatabase : DatabaseReference
-    var MainActivity: MainActivity? = null
     var data:String?=null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        MainActivity = MainActivity()
         val cat_id = this.arguments!!.getString("id")
         data = this.arguments?.getString("data")
         val rootView = inflater.inflate(R.layout.fragment_product_cat,container,false)
         mDatabase = FirebaseDatabase.getInstance().getReference("categories/$cat_id")
         mRecyclerView = rootView.findViewById(R.id.listView)
         mRecyclerView.setHasFixedSize(true)
-        mRecyclerView.setLayoutManager(LinearLayoutManager(getContext()))
+        mRecyclerView.layoutManager = LinearLayoutManager(context)
         logRecyclerView(cat_id)
-        (getActivity() as AppCompatActivity).getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
+        activity!!.backButton.visibility = View.VISIBLE
+        activity!!.backButton.setOnClickListener {
+            val newFragment = ProductFragment()
+            val manager: FragmentManager? = fragmentManager
+            val transaction:FragmentTransaction = manager!!.beginTransaction()
+            transaction.setCustomAnimations(R.animator.fade_in,R.animator.fade_out)
+            val tag:String? = newFragment.javaClass.name
+            transaction.addToBackStack(tag)
+            transaction.replace(R.id.main_frame,newFragment,newFragment.tag).commit()
+            activity!!.backButton.visibility = View.GONE
+        }
         return rootView
     }
 
-    override fun onOptionsItemSelected(item: MenuItem):Boolean {
-        var newFragment = ProductFragment()
-        var manager: FragmentManager? = getFragmentManager()
-        var transaction:FragmentTransaction = manager!!.beginTransaction()
-        transaction.setCustomAnimations(R.animator.fade_in,R.animator.fade_out)
-        var tag:String? = newFragment.javaClass.name
-        transaction.addToBackStack(tag)
-        transaction.replace(R.id.main_frame,newFragment,newFragment.tag).commit()
-        (getActivity() as AppCompatActivity).getSupportActionBar()!!.setDisplayHomeAsUpEnabled(false)
-        return super.onOptionsItemSelected(item)
-    }
-
-
-
-
     private fun logRecyclerView(cat_id:String) {
-        var firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<subCategories, CatsViewHolder>(
+        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<subCategories, CatsViewHolder>(
                 subCategories::class.java,
                 R.layout.list_cat_layout,
                 CatsViewHolder::class.java,
                 mDatabase
-
         ){
-
             override fun populateViewHolder(viewHolder: CatsViewHolder?, model: subCategories?, position: Int) {
                 viewHolder!!.itemView.subCategoryName.text = model!!.Name
-                var imgHolder = viewHolder.itemView.subCatImage
+                val imgHolder = viewHolder.itemView.subCatImage
                 Glide.with(context)
                         .load(model.Image)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -73,39 +60,29 @@ class ProductCatFragment : Fragment() {
                         .fitCenter()
                         .crossFade(1000)
                         .into(imgHolder)
-
-
-                var subCatId:String?=model.Index
+                val subCatId:String?=model.Index
                 loader?.visibility=View.GONE
-
                 viewHolder.itemView.setOnClickListener{
-                    loadProductItem(subCatId!!,cat_id!!,data)
+                    loadProductItem(subCatId!!,cat_id,data)
                 }
-
             }
-
         }
         mRecyclerView.adapter = firebaseRecyclerAdapter
     }
 
-
-    class CatsViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-
-    }
+    class CatsViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!)
     fun loadProductItem(sub_cat_id:String,cat_id:String,data:String?){
-        var newFragment = ProductItemFragment()
+        val newFragment = ProductItemFragment()
         val args = Bundle()
-        args.putString("id", "$sub_cat_id")
-        args.putString("cid", "$cat_id")
+        args.putString("id", sub_cat_id)
+        args.putString("cid", cat_id)
         if(data!=null) args.putString("data",data)
         newFragment.arguments = args
-        var manager: FragmentManager? = getFragmentManager()
-        var transaction:FragmentTransaction = manager!!.beginTransaction()
+        val manager: FragmentManager? = fragmentManager
+        val transaction:FragmentTransaction = manager!!.beginTransaction()
         transaction.setCustomAnimations(R.animator.fade_in,0)
-        var tag:String? = newFragment.javaClass.name
+        val tag:String? = newFragment.javaClass.name
         transaction.addToBackStack(tag)
         transaction.replace(R.id.main_frame,newFragment,newFragment.tag).commit()
     }
-
-
 }

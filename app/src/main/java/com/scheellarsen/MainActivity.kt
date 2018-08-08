@@ -2,13 +2,10 @@ package com.scheellarsen
 
 import android.app.PendingIntent.getActivity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -23,12 +20,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_layout.*
 import kotlinx.android.synthetic.main.list_layout.view.*
 import android.support.annotation.NonNull
+import android.support.v4.app.*
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.abs_layout.*
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -61,12 +61,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         callFragment("Home")
-        val actionBar = supportActionBar
-        actionBar!!.setDisplayShowHomeEnabled(false)
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(false)
         findViewById<BottomNavigationView>(R.id.navigation).visibility = View.VISIBLE
         getSupportActionBar()!!.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar()!!.setCustomView(R.layout.abs_layout);
+        this.backButton.visibility = View.GONE
+        if(!checkPermission())
+            requestPermission()
         setTitle("");
         mAuth.signInAnonymously()
                 .addOnCompleteListener(this, object: OnCompleteListener<AuthResult> {
@@ -128,7 +128,6 @@ class MainActivity : AppCompatActivity() {
                 args.putString("data", data)
                 fragment.arguments = args
             }
-            var newTag: String? = fragment.javaClass.name
             transaction.replace(R.id.main_frame, fragment)
             transaction.addToBackStack(null)
             transaction.commit()
@@ -138,15 +137,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         var currentTag = manager!!.fragments.toString()
-
         if(Regex("AppHelpFragment|ProductCatFragment|ProductItemFragment|ProductItemViewFragment|CameraActivity").find(currentTag)?.value!=null){
 
-            if(Regex("ProductCatFragment").find(currentTag)?.value!=null)
-                getSupportActionBar()!!.setDisplayHomeAsUpEnabled(false)
+            if(Regex("ProductCatFragment|AppHelpFragment").find(currentTag)?.value!=null)
+                this.backButton.visibility = View.GONE
 
             navigation.visibility = View.VISIBLE
             manager!!.popBackStack()
         }
+
+    }
+    fun checkPermission():Boolean{
+        val writeExternalStorage = ContextCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val useCamera = ContextCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)
+        if(writeExternalStorage== PackageManager.PERMISSION_GRANTED && useCamera== PackageManager.PERMISSION_GRANTED){
+            return true
+        }else
+            return false
+    }
+    fun requestPermission(){
+        ActivityCompat.requestPermissions(this,arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA),1)
 
     }
 
