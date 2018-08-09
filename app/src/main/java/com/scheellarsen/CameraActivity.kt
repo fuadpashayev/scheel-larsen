@@ -58,11 +58,16 @@ class CameraActivity : AppCompatActivity(){
     private var newRot = 0f
 
 
-
     @SuppressLint("ClickableViewAccessibility")
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
         getSupportActionBar()!!.hide()
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+
+
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+
         val extras = intent.extras
         val imgUrl = extras.get("imgUrl")
         galleryImage = extras.get("galleryImage")
@@ -169,6 +174,7 @@ class CameraActivity : AppCompatActivity(){
                 }
             })
             val alertDialogObject = dialogBuilder.create()
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             alertDialogObject.show()
 
         }
@@ -179,21 +185,46 @@ class CameraActivity : AppCompatActivity(){
         }
     }
 
+    fun vibrate(ms:Long=20){
+        (this@CameraActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(ms)
+    }
+
     override fun onBackPressed() {
         super.finish()
     }
 
-
 //    inner class gestureDetector:GestureDetector.SimpleOnGestureListener(){
 //        override fun onLongPress(e:MotionEvent) {
+//            Log.d("--------event",e.toString())
+//            val mAnimals = ArrayList<String>()
+//            mAnimals.add("Edit")
+//            if(imageCount>1) mAnimals.add("Delete")
+//            val Animals = mAnimals.toArray(arrayOfNulls<String>(mAnimals.size))
+//            val dialogBuilder = AlertDialog.Builder(this@CameraActivity)
+//            dialogBuilder.setTitle("Valgmuligheder")
+//            dialogBuilder.setCancelable(true)
+//            dialogBuilder.setItems(Animals, object: DialogInterface.OnClickListener{
+//                override fun onClick(dialog: DialogInterface, item:Int) {
+//                    when(item){
+//                        0->{
+//                            val intent = Intent(this@CameraActivity,MainActivity::class.java)
+//                            intent.putExtra("data","1e9f5t")
+//                            startActivityForResult(intent,2)
+//                        }
+//                        1->{
+//                            //camera_frame.removeView(this)
+//                        }
 //
-//            if(imageCount>1){
-//                Log.d("-------aaa","deyismek olar")
-//                Log.d("-------aaa","Silmek olar")
-//            }else{
-//                Log.d("-------aaa","deyismek olar")
-//            }
+//                    }
+//                }
+//            })
+//            val alertDialogObject = dialogBuilder.create()
+//            alertDialogObject.show()
 //
+//
+//
+//
+//            return super.onLongPress(e)
 //        }
 //    }
 
@@ -224,11 +255,13 @@ class CameraActivity : AppCompatActivity(){
         override fun onTouch(v:View, event:MotionEvent):Boolean {
 //            SGD!!.onTouchEvent(event)
             val view = image
+            view.alpha = 0.5f
             val bitmap = Bitmap.createBitmap(view.width,view.height,Bitmap.Config.ARGB_8888)
             val b = BitmapDrawable(bitmap)
             b.setAntiAlias(true)
             val duration = event.getEventTime() - event.getDownTime()
             if(duration<200 && event.pointerCount==1 && event.getAction() == 1){
+                vibrate(20)
                 val sx = image.rotationY
                 if(sx==0f){
                     image.rotationY = 180f
@@ -237,6 +270,7 @@ class CameraActivity : AppCompatActivity(){
                 }
 
             }
+
 
             when (event.getAction() and MotionEvent.ACTION_MASK) {
                 MotionEvent.ACTION_DOWN -> {
@@ -256,8 +290,8 @@ class CameraActivity : AppCompatActivity(){
                     }
                     d = rotation(event)
                 }
-                MotionEvent.ACTION_UP -> {}
-                MotionEvent.ACTION_POINTER_UP -> mode = NONE
+                MotionEvent.ACTION_UP -> {view.alpha = 1f}
+                MotionEvent.ACTION_POINTER_UP -> {mode = NONE;view.alpha = 1f}
                 MotionEvent.ACTION_MOVE ->if (mode === DRAG && event.pointerCount===1)
                 {
                     x = event.getRawX()
@@ -269,6 +303,7 @@ class CameraActivity : AppCompatActivity(){
                     parms!!.rightMargin = parms!!.leftMargin + (5 * parms!!.width)
                     parms!!.bottomMargin = parms!!.topMargin + (10 * parms!!.height)
                     view.setLayoutParams(parms)
+
                 }
                 else if (mode === ZOOM)
                 {
@@ -290,19 +325,17 @@ class CameraActivity : AppCompatActivity(){
                                 view.setScaleY(scale)
                             }
                         }
-                        view.animate().rotationBy(angle).setDuration(0).setInterpolator(LinearInterpolator()).start()
+
 
                         view.setLayoutParams(parms)
-                    }
-                }else if(mode!=ZOOM && mode!=DRAG){
-                    if(event.pointerCount==2){
                         view.animate().rotationBy(angle).setDuration(0).setInterpolator(LinearInterpolator()).start()
                     }
-
                 }
             }
+            //view.alpha = 1f
             return true
         }
+
     }
 
 

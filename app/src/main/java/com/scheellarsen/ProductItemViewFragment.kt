@@ -187,9 +187,6 @@ class ProductItemViewFragment : Fragment() {
                         val intent = Intent(activity, CameraActivity::class.java)
                         intent.putExtra("imgUrl", imgUrl)
                         intent.putExtra("galleryImage", selectedImage)
-                        intent.putExtra("product_id", productId)
-                        intent.putExtra("cat_id", catId)
-                        intent.putExtra("scat_id", scatId)
                         startActivity(intent)
                     } catch (e: IOException) {
                         e.printStackTrace()
