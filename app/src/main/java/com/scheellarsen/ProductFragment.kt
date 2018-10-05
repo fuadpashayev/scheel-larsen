@@ -25,7 +25,7 @@ class ProductFragment : Fragment() {
     var data:String?=null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         MainActivity = MainActivity()
-        var rootView = inflater.inflate(R.layout.fragment_products,container,false)
+        val rootView = inflater.inflate(R.layout.fragment_products,container,false)
         data = this.arguments?.getString("data")
         mDatabase = FirebaseDatabase.getInstance().getReference("main_categories")
         mRecyclerView = rootView.findViewById(R.id.listView)
@@ -39,7 +39,7 @@ class ProductFragment : Fragment() {
 
 
     private fun logRecyclerView() {
-        var firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<Categories, CategoriesViewHolder>(
+        val firebaseRecyclerAdapter = object : FirebaseRecyclerAdapter<Categories, CategoriesViewHolder>(
                 Categories::class.java,
                 R.layout.list_layout,
                 CategoriesViewHolder::class.java,
@@ -51,7 +51,7 @@ class ProductFragment : Fragment() {
             override fun populateViewHolder(viewHolder: CategoriesViewHolder?, model: Categories?, position: Int) {
 
                 viewHolder!!.itemView.catName.text = model!!.Name
-                var catId:String?=model.Index!!
+                val catId:String?=model.Index!!
                 loader?.visibility=View.GONE
                 viewHolder.itemView.setOnClickListener{
                     loadProductCat(catId!!,data)
@@ -68,15 +68,15 @@ class ProductFragment : Fragment() {
 
     }
     fun loadProductCat(cat_id:String,data:String?){
-        var newFragment = ProductCatFragment()
+        val newFragment = ProductCatFragment()
         val args = Bundle()
-        args.putString("id", "$cat_id")
+        args.putString("id", cat_id)
         if(data!=null) args.putString("data",data)
         newFragment.arguments = args
-        var manager: FragmentManager? = getFragmentManager()
-        var transaction:FragmentTransaction = manager!!.beginTransaction()
+        val manager: FragmentManager? = getFragmentManager()
+        val transaction:FragmentTransaction = manager!!.beginTransaction()
         transaction.setCustomAnimations(R.animator.fade_in,0)
-        var tag:String? = newFragment.javaClass.name
+        val tag:String? = newFragment.javaClass.name
         transaction.addToBackStack(tag)
         transaction.replace(R.id.main_frame,newFragment,newFragment.tag).commit()
     }
